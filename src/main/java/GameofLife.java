@@ -11,13 +11,7 @@ public class GameofLife {
         int height = 20;
         int[][] board_state;
 
-//        board_state = dead_state(width,height);
-//        render(board_state);
-//        print_board(board_state,width,height);
-//        System.out.println();
-
         board_state = random_state(width,height);
-        //print_board(board_state,width,height);
         render(board_state);
 
     }
@@ -60,6 +54,80 @@ public class GameofLife {
             }
         }
         return board;
+    }
+
+    static void next_board_state(int[][] boardState){
+        int[][] editBoard = boardState;
+
+        /*
+        boardState[x][y]
+        boardState[x][y-1] left cell
+        boardState[x][y+1] right cell
+        boardState[x-1][y] top cell
+        boardState[x+1][y] bottom cell
+        boardState[x-1][y-1] top left cell
+        boardState[x-1][y+1] top right cell
+        boardState[x+1][y+1] bottom right cell
+        boardState[x+1][y-1] bottom left cell
+
+        Any live cell with 0 or 1 live neighbors becomes dead,
+         because of underpopulation
+         if sum of all < 1 then die (except our cell)
+
+        Any live cell with 2 or 3 live neighbors stays alive,
+         because its neighborhood is just right
+         if 1<sum<3 then alive
+
+        Any live cell with more than 3 live neighbors becomes dead,
+        because of overpopulation
+        if sum >= 3 then die
+
+        Any dead cell with exactly 3 live
+        neighbors becomes alive, by reproduction
+        if sum = 3, then alive
+
+         */
+
+        for (int x = 0 ; x < editBoard.length; x++){
+            int sum = 0;
+            for(int y = 0; y<editBoard[0].length; y++){
+                // check for alive cells in neighbouring cells
+
+                if (y == 0 && x==0){
+                    sum = (boardState[x][y + 1] + boardState[x + 1][y] + boardState[x + 1][y + 1]);
+
+                } else if (y == (editBoard[0].length -1) && x == 0 ){
+                    sum = (boardState[x][y - 1] + boardState[x + 1][y] + boardState[x + 1][y - 1]);
+
+                } else if (x == (editBoard.length-1) && y== 0) {
+                    sum = (boardState[x][y + 1] + boardState[x - 1][y] + boardState[x - 1][y + 1]);
+
+                } else if (x == (editBoard.length -1) && y == (editBoard[0].length - 1) ) {
+                    sum = (boardState[x][y - 1] + boardState[x - 1][y] + boardState[x - 1][y - 1]);
+
+                } else if( (x >= 1 && y >= 1) || (x <= (editBoard.length-2) &&  y <= (editBoard[0].length-2))) {
+                    sum = (boardState[x][y - 1] + boardState[x][y + 1] + boardState[x - 1][y] + boardState[x + 1][y] +
+                            boardState[x - 1][y - 1] + boardState[x - 1][y + 1] + boardState[x + 1][y + 1] + boardState[x + 1][y - 1]);
+
+                }
+
+                if (boardState[x][y] == 1) {
+                    if (sum < 1) {
+                        editBoard[x][y] = 0;
+                    } else if (sum == 2 || sum == 3) {
+                        editBoard[x][y] = 1;
+                    } else if (sum > 3) {
+                        editBoard[x][y] = 0;
+                    }
+                } else {
+                    if (sum == 3) {
+                        editBoard[x][y] = 1;
+                    }
+                }
+            }
+
+        }
+
     }
 
     static void print_board(int[][] board, int width, int height){
