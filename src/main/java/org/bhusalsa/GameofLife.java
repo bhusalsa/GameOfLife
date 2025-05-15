@@ -1,19 +1,30 @@
-package main.java;
+package org.bhusalsa;
 
 import java.util.Random;
 
 public class GameofLife {
 
-    int[][] random_state;
-    public static void main(String[] args) {
+    static int population = 0;
+    static int generation = 0;
+    static int width = 150;
+    static int height = 75;
+    static int[][] board_state;
+    public static void main(String[] args) throws InterruptedException {
 
-        int width = 160;
-        int height = 20;
-        int[][] board_state;
+        //int width = 150;
+        //int height = 25;
+        //int[][] board_state;
 
         board_state = random_state(width,height);
-        render(board_state);
-
+        //render(board_state);
+        int[][] next_state = board_state;
+        while(true) {
+            generation += 1;
+            render(next_state);
+            next_state = next_board_state(next_state);
+            Thread.sleep(300);
+            //render(board_state);
+        }
     }
 
     static int[][] random_state(int width, int height){
@@ -30,7 +41,7 @@ public class GameofLife {
             {
                 double randomNum = random.nextDouble();
 
-                if (randomNum >= 0.5)
+                if (randomNum >= 0.87)
                     cell_state = 1;
                 else
                     cell_state = 0;
@@ -56,8 +67,8 @@ public class GameofLife {
         return board;
     }
 
-    static void next_board_state(int[][] boardState){
-        int[][] editBoard = boardState;
+    static int[][] next_board_state(int[][] boardState){
+        int[][] editBoard = dead_state(boardState[0].length, boardState.length);
 
         /*
         boardState[x][y]
@@ -105,10 +116,25 @@ public class GameofLife {
                 } else if (x == (editBoard.length -1) && y == (editBoard[0].length - 1) ) {
                     sum = (boardState[x][y - 1] + boardState[x - 1][y] + boardState[x - 1][y - 1]);
 
+                } else if (x == 0 && ( y >= 1 && y <= (editBoard[0].length - 2) )) {
+                    sum = boardState[x][y-1] + boardState[x][y+1] + boardState[x+1][y] +
+                            boardState[x+1][y+1] + boardState[x+1][y-1];
+
+                } else if (y == 0 && ( x >= 1 && x <= (editBoard.length - 2))) {
+                    sum = boardState[x][y+1] + boardState[x-1][y] + boardState[x+1][y] +
+                            boardState[x-1][y+1] + boardState[x+1][y+1];
+
+                } else if ( x == (editBoard.length - 1) && ( y >= 1 && y <= (editBoard[0].length - 2) ) ) {
+                    sum = boardState[x][y-1] + boardState[x][y+1] + boardState[x-1][y] +
+                            boardState[x-1][y-1] + boardState[x-1][y+1];
+
+                } else if ((y == editBoard[0].length -1) && (x >= 1 && x <= (editBoard.length -1))) {
+                    sum = boardState[x][y-1] + boardState[x-1][y] + boardState[x+1][y] +
+                            boardState[x-1][y-1] + boardState[x+1][y-1];
+
                 } else if( (x >= 1 && y >= 1) || (x <= (editBoard.length-2) &&  y <= (editBoard[0].length-2))) {
                     sum = (boardState[x][y - 1] + boardState[x][y + 1] + boardState[x - 1][y] + boardState[x + 1][y] +
                             boardState[x - 1][y - 1] + boardState[x - 1][y + 1] + boardState[x + 1][y + 1] + boardState[x + 1][y - 1]);
-
                 }
 
                 if (boardState[x][y] == 1) {
@@ -127,6 +153,9 @@ public class GameofLife {
             }
 
         }
+
+        //render(editBoard);
+        return editBoard;
 
     }
 
@@ -147,9 +176,8 @@ public class GameofLife {
         System.out.print("]");
     }
 
-    static void render(int[][] board_state)
-    {
-        System.out.println("-".repeat(board_state[0].length + 4));
+    static void render(int[][] board_state) {
+        System.out.println("-".repeat(board_state[0].length + 4) + " Gen: " + generation );
         StringBuilder stringBuilder = new StringBuilder("");
         for(int x = 0; x < board_state.length; x++)
         {
@@ -160,10 +188,10 @@ public class GameofLife {
                 //System.out.print(board_state[x][y]);
                 if (board_state[x][y] == 1) {
                     //System.out.print("#");
-                    stringBuilder.append("#");
+                    stringBuilder.append("\u25AE"); //"\u25AE"
                 }else {
                     //System.out.print(" ");
-                    stringBuilder.append(" ");
+                    stringBuilder.append(" ");  //"\u25A1"
                 }
             }
             stringBuilder.append(" |");
@@ -171,5 +199,18 @@ public class GameofLife {
             //System.out.println();
         }
         System.out.println("-".repeat(board_state[0].length + 4));
+    }
+
+    static int getWidth() {
+        return width;
+    }
+
+    static int getHeight(){
+        return height;
+    }
+
+    static int[][] getBoard_state()
+    {
+        return random_state(width,height);
     }
 }
