@@ -20,7 +20,7 @@ public class App extends Application {
     private int columns;// = 150;
     private int rows;// = 25;
     private int[][] colorState;
-    final int cellSize = 10;
+    final int cellSize = 20;
     Rectangle[][] cellArray;// = new Rectangle[rows][columns];
 
     public static void main(String[] args) {
@@ -76,12 +76,12 @@ public class App extends Application {
 
 
         // Create a scene and add the grid to it
-        Scene scene = new Scene(grid, 150 * cellSize, 25 * cellSize); // Adjust scene size to fit grid
+        Scene scene = new Scene(grid, columns * cellSize, rows * cellSize); // Adjust scene size to fit grid
         primaryStage.setTitle("Conway's Game of Life");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(700), event -> {
             updateGrid(grid);
         }));
         timeline.setCycleCount(Animation.INDEFINITE); // repeat forever

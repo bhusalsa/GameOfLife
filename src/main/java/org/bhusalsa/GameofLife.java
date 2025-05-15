@@ -6,8 +6,8 @@ public class GameofLife {
 
     static int population = 0;
     static int generation = 0;
-    static int width = 150;
-    static int height = 75;
+    static int width = 50;
+    static int height = 35;
     static int[][] board_state;
     public static void main(String[] args) throws InterruptedException {
 
