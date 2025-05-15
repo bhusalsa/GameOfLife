@@ -1,4 +1,4 @@
-Conway's Game of Life
+<H1>Conway's Game of Life</H1>
 This project is an implementation of Conway's Game of Life, a cellular automaton created by mathematician John Conway. 
 The project was built as part of my exploration into advanced programming concepts.
 
